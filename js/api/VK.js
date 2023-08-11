@@ -7,12 +7,12 @@
 class VK {
 
   static ACCESS_TOKEN = ((e) => {
-    if (localStorage.getItem('token')) {
-      return localStorage.getItem('token')
+    if (localStorage.getItem('tokenVK')) {
+      return localStorage.getItem('tokenVK')
     }
     else {
       const token = prompt('Токен от VK')
-      localStorage.setItem('token', token)
+      localStorage.setItem('tokenVK', token)
       return token
     }
   })();
