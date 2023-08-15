@@ -56,21 +56,18 @@ class ImageViewer {
         const fileUploader = App.getModal('fileUploader')
         const allSelectedImg = this.imageBlock.getElementsByClassName('selected')
         
-        // const b = [...this.imageBlock.getElementsByTagName('img')].filter(el => el.classList.contains('selected'))
-        // const a = document.querySelector('.scrolling.content')
-        // a.appendChild(b[0])
+        
         fileUploader.open()
         fileUploader.showImages(allSelectedImg)
-        // const filePreviewer = App.getModal('filePreviewer')
-        // filePreviewer.open()
       }
-      // const filePreviewer = App.getModal('filePreviewer')
-    })
 
-    // this.element.querySelector('.images-list').addEventListener('click', (e) => {
-      
-      
-    // })
+      if (e.target.classList.contains('show-uploaded-files')) {
+        const filePreviewer = App.getModal('filePreviewer')
+        filePreviewer.open()
+        // const i = document.querySelector('.asterisk.loading.icon.massive')
+        Yandex.getUploadedFiles((error, data) => {filePreviewer.showImages(data)})
+      }
+    })
   }
 
   /**

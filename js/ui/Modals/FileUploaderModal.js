@@ -7,8 +7,6 @@ class FileUploaderModal extends BaseModal {
     super(element)
     this.windowUploader = element[0].querySelector('.scrolling.content')
     this.registerEvents()
-
-
   }
 
   /**
@@ -27,14 +25,13 @@ class FileUploaderModal extends BaseModal {
     const sendAllButton = this.DOMElement.querySelector('.ui.send-all.button')
 
     xBtn.addEventListener('click', () => {this.close()})
-    closeButton.addEventListener('click', () => {this.close})
+    closeButton.addEventListener('click', () => {this.close()})
     sendAllButton.addEventListener('click', () => {this.sendAllImages()})
 
     this.windowUploader.addEventListener('click', (e) => {
       
       if (e.target.tagName == 'INPUT') {
-        console.log(e.target)
-        e.target.closest('.image-preview-container').classList.remove('.error')
+        e.target.closest('.image-preview-container').querySelector('.input').classList.remove('error')
       }
 
       if (e.target.classList.contains('button') || e.target.classList.contains('upload')) {
@@ -42,14 +39,13 @@ class FileUploaderModal extends BaseModal {
         this.sendImage(imgContainer)
       }
     })
-
-
   }
 
   /**
    * Отображает все полученные изображения в теле всплывающего окна
    */
   showImages(images) {
+    
     const reversList = [...images].reverse()
 
     for(let i=0; i < reversList.length; i++) {
@@ -76,13 +72,32 @@ class FileUploaderModal extends BaseModal {
    * Отправляет все изображения в облако
    */
   sendAllImages() {
-
+    [...this.windowUploader.children].forEach((el) => {
+      this.sendImage(el)
+    })
   }
 
   /**
    * Валидирует изображение и отправляет его на сервер
    */
   sendImage(imageContainer) {
-    console.log(imageContainer)
+    const blockClassInput = imageContainer.querySelector('.input')
+    const entryFieldInput = blockClassInput.querySelector('input').value
+
+    if (entryFieldInput.trim() == '') {
+      blockClassInput.classList.add('error')
+      return
+    }
+
+    blockClassInput.classList.add('disabled')
+
+    const blockImgUrl = imageContainer.querySelector('img').src
+    const jpg = '.jpg'
+    Yandex.uploadFile(entryFieldInput + jpg, blockImgUrl, () => {
+      imageContainer.remove()
+      if (this.windowUploader.children.length == 0) {
+        this.close()
+      }
+    })
   }
 }

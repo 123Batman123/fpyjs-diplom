@@ -48,7 +48,7 @@ class VK {
         imagesList.push(url)
     })
     this.lastCallback(imagesList)
-    this.lastCallback = () => {}
+    this.lastCallback = null
   }
 }
 
