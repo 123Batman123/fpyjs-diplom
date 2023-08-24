@@ -22,25 +22,25 @@ class PreviewModal extends BaseModal {
 		xBtn.addEventListener('click', () => {this.close()})
 
 		this.windowPreview.addEventListener('click', (e) => {
-			console.log(e.target)
 			if (e.target.classList.contains('delete')) {
 				const i = e.target.querySelector('i')
-				console.log(i)
 				i.classList.add('icon', 'spinner', 'loading')
 				e.target.classList.add('disabled')
 				let path = (e.target.dataset.path)
-				Yandex.removeFile(path, () => {
-					alert('Удалено')
-					// console.log(`LOOKKKKKKKKKKKKKKK ${error}, ${data}`)
-					// console.log(e.target.closest('.image-preview-container'))
-					// if (!error) {
-					// 	console.log(e.target.closest('.image-preview-container'))
-					// 	e.target.closest('.image-preview-container').remove()
-					// }
+
+				Yandex.removeFile(path, (error) => {
+					if (!error) {
+						e.target.closest('.image-preview-container').remove()
+					} 
+					else {
+						console.log(`ERROR!!! ${error}`)
+						i.classList.remove('icon', 'spinner', 'loading')
+						e.target.classList.remove('disabled')
+					}
 				})
 			}
+
 			if (e.target.classList.contains('download')) {
-				console.log(e.target.dataset.file)
 				Yandex.downloadFileByUrl(e.target.dataset.file)
 			}
 		})
@@ -54,15 +54,15 @@ class PreviewModal extends BaseModal {
 	showImages(data) {
 		
 		if (data) {
-      this.DOMElement.querySelector('.content').innerHTML = ''
-    }
+      		this.DOMElement.querySelector('.content').innerHTML = ''
+    	}
 
 		const reverseItems = data.items
 		reverseItems.reverse()
 		
 		for(let i=0; i < reverseItems.length; i++) {
-      reverseItems[i] = this.getImageInfo(reverseItems[i])
-    }
+      		reverseItems[i] = this.getImageInfo(reverseItems[i])
+    	}
 		
 		this.windowPreview.innerHTML = reverseItems.join('\n')
 	}
@@ -90,26 +90,28 @@ class PreviewModal extends BaseModal {
 		const kilobyte = Math.floor(item.size / 1000)
 		const ruDate = this.formatDate(item.created)
 		/*${item.preview}*/
-		return `<div class="image-preview-container">
-		<img src='${item.preview}' />
-		<table class="ui celled table">
-		<thead>
-			<tr><th>Имя</th><th>Создано</th><th>Размер</th></tr>
-		</thead>
-		<tbody>
-			<tr><td>${item.name}</td><td>${ruDate}</td><td>${kilobyte}Кб</td></tr>
-		</tbody>
-		</table>
-		<div class="buttons-wrapper">
-			<button class="ui labeled icon red basic button delete" data-path='${item.path}'>
-				Удалить
-				<i class="trash icon"></i>
-			</button>
-			<button class="ui labeled icon violet basic button download" data-file='${item.file}'>
-				Скачать
-				<i class="download icon"></i>
-			</button>
+		return `
+		<div class="image-preview-container">
+			<img src='${item.file}' />
+			<table class="ui celled table">
+				<thead>
+					<tr><th>Имя</th><th>Создано</th><th>Размер</th></tr>
+				</thead>
+				<tbody>
+					<tr><td>${item.name}</td><td>${ruDate}</td><td>${kilobyte}Кб</td></tr>
+				</tbody>
+			</table>
+			<div class="buttons-wrapper">
+				<button class="ui labeled icon red basic button delete" data-path='${item.path}'>
+					Удалить
+					<i class="trash icon"></i>
+				</button>
+				<button class="ui labeled icon violet basic button download" data-file='${item.file}'>
+					Скачать
+					<i class="download icon"></i>
+				</button>
+			</div>
 		</div>
-	</div>`
+		`
 	}
 }

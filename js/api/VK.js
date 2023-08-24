@@ -35,8 +35,13 @@ class VK {
    * Является обработчиком ответа от сервера.
    */
   static processData(result){
-    const script = document.querySelectorAll('.scriptVK')
-    script.remove
+    const script = document.querySelector('.scriptVK')
+
+    // console.log('ИЗ ВК', script)
+    if (script) {
+      script.remove()
+    }
+    
     if (result.error) {
         alert(result.error.error_msg)
         return

@@ -25,12 +25,14 @@ const createRequest = (options = {}) => {
     xhr.send()
     
     xhr.onload = () => {
-        if ([200, 202].includes(xhr.status)) {
-            // console.log(xhr.response)
+        
+        if (xhr.status >= 200 && xhr.status < 300) {
             callback(error, xhr.response)
+            // console.log(xhr.response)
         }
     }
-
+    
+    
     xhr.onerror = function(msgError) {
         error = msgError
     }
